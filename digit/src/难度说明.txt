@@ -1,0 +1,12 @@
+input00-target00 难度：5  步  参考时间：1.009000 s
+input01-target01 难度：8  步  参考时间：0.035000 s
+input02-target02 难度：10步  参考时间：0.052000 s
+input03-target03 难度：14步  参考时间：0.059000 s
+input04-target04 难度：17步  参考时间：0.088000 s
+input05-target05 难度：20步  参考时间：0.123000 s
+input06-target06 难度：23步  参考时间：5.812000 s
+input07-target07 难度：25步  参考时间：45.995000 s
+input08-target08 难度：27步  参考时间：大于 60s
+input09-target09 难度：28步  参考时间：大于 60s
+input10-target10 难度：30步  参考时间：大于 60s
+input11-target11 难度：32步  参考时间：大于 60s
