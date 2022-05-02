@@ -15,7 +15,7 @@ typedef struct Tree{    // A*搜索采用树结构 保存搜索路径
     int action;         // 转移函数， 父节点通过 shift_func[action] 得到此节点
     struct Tree *tminfn;// 以该节点为根的子树中fn最小的节点
     // 在IDA*中  n, tminfn，child中的3个 不会用到 
-}Tree;
+}Tree,*Tzheng;
 // 初始化一个树，根节点由初始状态数组 start[5][5] 生成
 Tree* initA_star(int start[5][5],int gn, int hn);
 // 返回以t为根的子树中fn最小的节点
@@ -25,7 +25,7 @@ void extendTree(Tree* t,int target[5][5], int h(int start[5][5], int target[5][5
 // 删除以t为根的树
 void delTree(Tree *t);
 // 输出转移步骤
-void prt(Tree *tmp);
+void prt(Tree *tziheng);
 
 void A_star(int start[5][5], int target[5][5],int h(int start[5][5], int target[5][5])){
     // t1 = clock();
@@ -104,11 +104,11 @@ void extendTree(Tree* t,int target[5][5], int h(int start[5][5], int target[5][5
             free(tmp);
     }
 }
-void prt(Tree *tmp){
-    int actions[1000], i = 0, steps = tmp->gn;
+void prt(Tree *tcq){
+    int actions[1000], i = 0, steps = tcq->gn;
     while (i < steps){
-        actions[steps - i - 1] = tmp->action;
-        tmp = tmp->father;
+        actions[steps - i - 1] = tcq->action;
+        tcq = tcq->father;
         i++;
     }
     for(i = 0; i < steps ; ++i)
