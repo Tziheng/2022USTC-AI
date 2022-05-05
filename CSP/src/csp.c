@@ -21,7 +21,7 @@ int x;  // 需要每天安排至少 x 个人值班
 6. 工人a不想与工人b同一天工作
 */
 
-int dfs(int id,int day);
+int dfs(int k);
 int prt();
 
 int main(int argc, char* argv[]){
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]){
     
     fclose(fp);
 
-    dfs(0,0);
+    dfs(0);
 
     prt();
 
@@ -58,7 +58,8 @@ int check4(int id,int day);
 int check5(int id,int day);
 int check6(int id,int day);
 // 按天排班. dfs(id,day) 说明0,1,...,day-1都已经排好
-int dfs(int id, int day){
+int dfs(int k){
+    int id = k%num, day = k/num;
     if(day == 7) 
         return 1;
 
@@ -66,7 +67,7 @@ int dfs(int id, int day){
         dispatch[id][day] = color;
         if(check1(id,day) || check2(id,day) || check4(id,day) || check5(id,day) || check6(id,day)) continue;
         // 无冲突，下面进行dfs迭代下一个格子
-        if(id == num - 1 ? dfs(0,day+1) : dfs(id+1,day)) 
+        if(dfs(k+1)) 
             return 1;
     }
     return 0;
