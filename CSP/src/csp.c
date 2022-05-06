@@ -58,47 +58,22 @@ int check4(int id,int day);
 int check5(int id,int day);
 int check6(int id,int day);
 
-int MRVn = 0,MRV[MAXNUM*7]; // MRVn: 通过MRV赋值的格子数，MRV:通过MRV赋值的格子集合,这里仅对 约束3,6 使用MRV优化
-int MRVappend(int k,int status){
-    int id = k % num, day = k / num,j;
-    if(dispatch[id][day] == status)
-            MRV[MRVn++] = k;
-        else{
-            for(j = 0; j < MRVn && MRV[j] != k; ++j);
-            if(j != MRVn)
-                return 0;   // 该节点已被MRV赋值过，加入MRV数组失败，返回0
-            dispatch[id][day] = status;
-            MRV[MRVn++] = k;
-        }
-    return 1;
-}
-
 // 按天排班. dfs(id,day) 说明0,1,...,day-1都已经排好
 int dfs(int k){
     cnt++;
-    int id = k % num, day = k / num,MRVntmp = MRVn;
+    int id = k % num, day = k / num;
     if(day == 7) 
         return 1;
 
-    // 检查该格子有没有被MRV赋值过
-    for(int i = 0; MRVstatus && i < MRVn; ++i)
-        if(MRV[i] == k){
-            if(check1(id,day) || check2(id,day) || check4(id,day) || check5(id,day) || check6(id,day)) return 0;
-            if(dfs(k+1)) return 1;
-            MRVn = MRVntmp; // MRV回溯
-            return 0;
-        }
-
     for(int color = 0;color < 2; color++){  // 给格子上色（这里只有两种颜色，代表值日与休息）
         dispatch[id][day] = color;
-        MRVn = MRVntmp; // MRV回溯
         if(check1(id,day) || check2(id,day) || check4(id,day) || check5(id,day) || check6(id,day))
             continue;
         // 无冲突，下面进行dfs迭代下一个格子
         if(dfs(k+1)) 
             return 1;
     }
-    MRVn = MRVntmp; // MRV回溯
+    
     return 0;
 }
 
@@ -112,11 +87,6 @@ int check1(int id,int day){
     if(s > 5)
         return 1;
 
-    // MRV 赋值
-    if(MRVstatus && s == 5)
-        for(int i = day+1; i < 7; ++i)
-            if(!MRVappend(id+i*num,0))
-                return 1;
     return 0;
 }
 
@@ -130,11 +100,6 @@ int check2(int id,int day){
     (day >= 4 && dispatch[id][2] == 0 && dispatch[id][3] == 0 && dispatch[id][4] == 0) || \
     (day >= 5 && dispatch[id][3] == 0 && dispatch[id][4] == 0 && dispatch[id][5] == 0) || \
     (day >= 6 && dispatch[id][4] == 0 && dispatch[id][5] == 0 && dispatch[id][6] == 0)    )
-            return 1;
-
-    // MRV 赋值
-    if(MRVstatus && dispatch[id][day-1] == 0 && dispatch[id][day] == 0 && day < 6)
-        if(!MRVappend(id+(day+1)*num,1))
             return 1;
 
     return 0;
@@ -152,12 +117,6 @@ int check4(int id, int day){
     if(s + num - 1 - id < x)    // 该天不足x人
         return 1;
 
-    // MRV 赋值
-    if(MRVstatus && s + num - 1 - id == x)
-        for(int i = id + 1,k = day * num + i; i < num; ++i,++k)
-            if(!MRVappend(k,1)) 
-                return 1;   // 加入MRV数组失败，说明有冲突，不满足约束
-
     return 0;
 }
 
@@ -166,12 +125,8 @@ int check4(int id, int day){
 int check5(int id,int day){
     int s = 0;
     for(int i = 0; i < numsen; ++i)
-        if(senior[i] > id) {
-            if(MRVstatus && i == numsen - 1 && s == 0) // MRV 赋值
-                if(!MRVappend(day * num + senior[i],1))
-                    return 1;
+        if(senior[i] > id) 
             return 0;
-        }
         else if(dispatch[senior[i]][day])
                 s++;
     if(s == 0)
@@ -186,13 +141,6 @@ int check6(int id,int day){
     for(int i = 0; i < id; ++i)
         if(dispatch[i][day] && AB[i][id])
             return 1;
-
-    // MRV 赋值
-    for(int i = id,k = day * num + i;MRVstatus && i < num; ++i,++k)   
-        if(AB[i][id]){
-            if(!MRVappend(k,0))
-                return 1;
-        }
 
     return 0;
 }
