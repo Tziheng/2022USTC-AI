@@ -84,10 +84,10 @@ int h2(int start[5][5], int target[5][5]){  // 自定义的耗散函数
                 while (start[i][j] != target[x][y]) // 找到target中此星球的位置
                     y == 4 ? (x++, y = 0) : y++;
                 minr = r[0] = rd(x,y,i,j);   // 不通过星际航道的路程
-                r[1] = rd(x,y,0,2) + rd(4,2,i,j);
-                r[2] = rd(x,y,4,2) + rd(0,2,i,j);
-                r[3] = rd(x,y,2,0) + rd(2,4,i,j);
-                r[4] = rd(x,y,2,4) + rd(2,0,i,j);
+                r[1] = rd(x,y,0,2) + rd(4,2,i,j) + 1;
+                r[2] = rd(x,y,4,2) + rd(0,2,i,j) + 1;
+                r[3] = rd(x,y,2,0) + rd(2,4,i,j) + 1;
+                r[4] = rd(x,y,2,4) + rd(2,0,i,j) + 1;
                 for(int i = 1; i < 5; ++i)  // 找出 r[5] 最小值
                     if(minr > r[i])  minr = r[i];
                 s += minr;
