@@ -63,6 +63,7 @@ if __name__=='__main__':
     # 测试熵
     print(entropy([0.5]*2))     # 2面骰子    
     print(entropy([0.25]*4))    # 4面骰子
-
+    print(Bool(0.137))    
+    print(Bool(0.19))    
 
 
