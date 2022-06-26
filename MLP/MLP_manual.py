@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 class MLP:
-    def __init__(self,layerSize,activationFunction,activationFunctionDerivative):
+    def __init__(self,layerSize = [10,19,13,7,4],activationFunction,activationFunctionDerivative):
         self.layerSize = layerSize
         self.W = [None] + [np.random.normal(0,0.3,(self.layerSize[i+1],self.layerSize[i])) for i in range(len(self.layerSize)-1) ]
         self.biss = [None] + [ np.array([[0]*m]).T  for m in self.layerSize[1:] ]
