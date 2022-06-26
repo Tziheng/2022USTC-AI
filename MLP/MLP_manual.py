@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 class MLP:
-    def __init__(self,layerSize = [10,19,13,7,4],activationFunction,activationFunctionDerivative):
+    def __init__(self,activationFunction,activationFunctionDerivative,layerSize= [10,19,13,7,4]):
         self.layerSize = layerSize
         self.W = [None] + [np.random.normal(0,0.3,(self.layerSize[i+1],self.layerSize[i])) for i in range(len(self.layerSize)-1) ]
         self.biss = [None] + [ np.array([[0]*m]).T  for m in self.layerSize[1:] ]
@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
     def dtanxdx(x):
         return 1-tanh(x)**2
-    mlp = MLP([10, 10, 8, 8, 4],tanh,dtanxdx)
+    mlp = MLP(tanh,dtanxdx,[10, 10, 8, 8, 4])
 
     # 生成数据
     inputs = np.random.randn(100, 10)
