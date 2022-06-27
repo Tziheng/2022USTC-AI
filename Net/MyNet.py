@@ -23,8 +23,8 @@ class MyNet(nn.Module):
             nn.Conv2d(24,32,2),nn.ReLU()
         )
         self.fc = nn.Sequential(
-            # nn.LazyLinear(108),nn.ReLU(),
-            nn.Linear(800, 108),nn.ReLU(),
+            nn.LazyLinear(108),nn.ReLU(),   # lazy自动生成input channel
+            # nn.Linear(800, 108),nn.ReLU(), # 800是试出来的
             nn.Linear(108, 84),nn.ReLU(),
             nn.Linear(84, 10),nn.ReLU()
         )
