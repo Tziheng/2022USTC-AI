@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 class MLP:
-    def __init__(self,activationFunction,activationFunctionDerivative,layerSize= [10,19,13,7,4]):
+    def __init__(self,activationFunction,activationFunctionDerivative,layerSize=[10,19,13,7,4]):
         self.layerSize = layerSize
         self.W = [None] + [np.random.normal(0,0.3,(self.layerSize[i+1],self.layerSize[i])) for i in range(len(self.layerSize)-1) ]
         self.biss = [None] + [ np.array([[0]*m]).T  for m in self.layerSize[1:] ]
@@ -14,23 +14,34 @@ class MLP:
         self.z = [None]*len(self.layerSize)     # 输入    z = Wx + b ，其中x为上一层输出
         self.dw , self.db= [None]*len(self.layerSize),  [None]*len(self.layerSize)  # 反向传播求得的W与biss的梯度
         self.Loss = 0
+        def CrossEntropyLoss(x, y):
+            return  [-np.log(x[i][0]) for i in range(len(y)) if y[i][0] == 1].pop()
+        self.lossFunction = CrossEntropyLoss    # 损失函数
+        def Softmax(x):
+            x = np.exp(x)
+            return x/np.sum(x)
+        self.s_out = Softmax                    # 输出层的激活函数
 
     def forward(self, x):   # 前向传播
-        for i in range(len(self.layerSize)):  # 第i层向第i+1层传播
-            if i == 0:
+        for i in range(len(self.layerSize)):    # 第i层向第i+1层传播
+            if i == 0:                          # 输入层
                 self.h[i] = np.array([x]).T
+            elif i == len(self.layerSize) - 1:  # 输出层
+                self.z[i] = self.W[i].dot(self.h[i-1]) + self.biss[i]
+                self.h[i] = self.s_out(self.z[i])
             else:
                 self.z[i] = self.W[i].dot(self.h[i-1]) + self.biss[i]
                 self.h[i] = self.s(self.z[i])
         return  self.h[i].T
 
 
-    def backward(self, y):  # 反向传播, 误差值，采用 Loss = 0.5*||Δy||_2^2
+    def backward(self, y):  
         y = np.array([y]).T
-        self.Loss = 0.5 * np.sum([i**2 for i in (self.h[len(self.layerSize) - 1] - y) ])
+        # self.Loss = 0.5 * np.sum([i**2 for i in (self.h[len(self.layerSize) - 1] - y) ] )# 反向传播, 误差值，采用 Loss = 0.5*||Δy||_2^2
+        self.Loss = self.lossFunction(self.h[-1],y)
         for i in range(len(self.layerSize)-1,0,-1):  # 第i层向第i-1层反向传播，用δ表示 dLoss/dW
             if i == len(self.layerSize)-1:
-                delta = np.array((self.h[i] - y)*self.sf(self.z[i]))
+                delta = self.h[i] - y
             else:
                 delta = self.W[i+1].T.dot(delta)*self.sf(self.z[i])
             self.dw[i] = delta.dot(self.h[i-1].T)
@@ -67,14 +78,20 @@ if __name__ == '__main__':
     # 设置随机种子,保证结果的可复现性
     np.random.seed(1)
 
-    def dtanxdx(x):
-        return 1-tanh(x)**2
-    mlp = MLP(tanh,dtanxdx,[10, 10, 8, 8, 4])
-
     # 生成数据
     inputs = np.random.randn(100, 10)
     # 生成one-hot标签
     labels = np.eye(4)[np.random.randint(0, 4, size=(1, 100))].reshape(100, 4)
+    # print(labels)
+
+    def dtanxdx(x):
+        return 1-tanh(x)**2
+
+
+
+    mlp = MLP(tanh,dtanxdx,[10, 10, 8, 8, 4])
+
+
 
     # 训练
     epochs = 1000
